@@ -1,0 +1,266 @@
+.client-management {
+  display: flex;
+  gap: 30px;
+  height: 100%;
+}
+
+.client-list-section {
+  flex: 1;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e9ecef;
+  padding-right: 20px;
+}
+
+.client-details-section {
+  flex: 2;
+}
+
+.client-list-header {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.client-list-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.client-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-client-btn {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.add-client-btn:hover {
+  background-color: #3a7bc8;
+}
+
+.client-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.client-item {
+  padding: 15px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.client-item:hover {
+  background-color: #e9ecef;
+}
+
+.client-item.selected {
+  background-color: #e3f2fd;
+  border-left: 3px solid #4a90e2;
+}
+
+.client-name {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.client-email {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.client-next-service {
+  font-size: 12px;
+  color: #4a90e2;
+  font-weight: 500;
+}
+
+.loading-message, .no-results, .no-client-selected {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.client-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.client-details-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.edit-client-btn {
+  background-color: transparent;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.edit-client-btn:hover {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.client-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  width: 100%;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input, .form-group textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input:disabled, .form-group textarea:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.service-details {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.service-details h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #333;
+}
+
+.service-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.service-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.service-info-item .label {
+  font-size: 12px;
+  color: #666;
+}
+
+.service-info-item .value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.save-btn {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #3a7bc8;
+}
+
+@media (max-width: 992px) {
+  .client-management {
+    flex-direction: column;
+  }
+  
+  .client-list-section {
+    max-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+    padding-right: 0;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .client-list {
+    max-height: 300px;
+  }
+} 

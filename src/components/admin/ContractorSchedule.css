@@ -1,0 +1,1071 @@
+.contractor-schedule {
+  display: flex;
+  gap: 30px;
+  height: 100%;
+}
+
+.schedule-sidebar {
+  flex: 1;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.schedule-content {
+  flex: 3;
+}
+
+/* Calendar Styles */
+.calendar-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #4a90e2;
+  color: white;
+}
+
+.calendar-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.month-nav {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.month-nav:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.calendar-weekdays div {
+  text-align: center;
+  padding: 8px;
+  font-weight: 600;
+  color: #666;
+  font-size: 12px;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+}
+
+.calendar-day {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  color: #333;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+  background-color: #f0f7ff;
+}
+
+.calendar-day.other-month {
+  color: #ccc;
+}
+
+.calendar-day.has-appointments::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+}
+
+.calendar-day.selected {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.calendar-day.selected.has-appointments::after {
+  background-color: white;
+}
+
+/* Contractors List Styles */
+.contractors-list {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.contractors-list h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.contractor-item {
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.contractor-item:hover {
+  background-color: #e9ecef;
+}
+
+.contractor-item.selected {
+  background-color: #e3f2fd;
+  border-left: 3px solid #4a90e2;
+}
+
+.contractor-name {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.contractor-specialties {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Contractor Details Styles */
+.contractor-details {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+.contractor-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.contractor-details-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.contractor-rating {
+  background-color: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a90e2;
+}
+
+.contractor-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-item .label {
+  font-size: 12px;
+  color: #666;
+}
+
+.info-item .value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.contractor-appointments h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Date Appointments Styles */
+.date-appointments {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+.date-appointments h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.appointment-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 3px solid #4a90e2;
+}
+
+.appointment-date {
+  font-weight: 600;
+  color: #4a90e2;
+  margin-bottom: 5px;
+}
+
+.appointment-time {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+.appointment-client, .appointment-service, .appointment-address, .appointment-status, .appointment-assigned, .appointment-notes {
+  font-size: 14px;
+  color: #555;
+}
+
+.appointment-address {
+  font-size: 13px;
+  color: #666;
+}
+
+.appointment-status {
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.appointment-assigned {
+  margin-top: 5px;
+  font-weight: 500;
+  color: #28a745;
+}
+
+.appointment-notes {
+  margin-top: 5px;
+  font-style: italic;
+  font-size: 13px;
+  color: #666;
+}
+
+.assign-button {
+  margin-top: 10px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.assign-button:hover {
+  background-color: #3a7bc8;
+}
+
+.loading-message, .no-appointments {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+/* Assignment Modal Styles */
+.assignment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.assignment-modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 25px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.assignment-modal h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.assignment-modal .form-group {
+  margin-bottom: 20px;
+}
+
+.assignment-modal label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.assignment-modal select, .assignment-modal textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.save-btn {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #3a7bc8;
+}
+
+.save-btn:disabled {
+  background-color: #a0c3e8;
+  cursor: not-allowed;
+}
+
+@media (max-width: 992px) {
+  .contractor-schedule {
+    flex-direction: column;
+  }
+  
+  .schedule-sidebar {
+    max-width: 100%;
+    flex-direction: row;
+  }
+  
+  .calendar-container, .contractors-list {
+    flex: 1;
+  }
+  
+  .contractor-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .schedule-sidebar {
+    flex-direction: column;
+  }
+  
+  .appointments-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contractor-schedule-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabs Navigation */
+.contractor-tabs {
+  display: flex;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 16px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.tab-button {
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-button:hover {
+  color: #4a90e2;
+}
+
+.tab-button.active {
+  color: #4a90e2;
+  border-bottom: 3px solid #4a90e2;
+}
+
+.tab-icon {
+  font-size: 18px;
+}
+
+/* Tab Content */
+.contractor-tab-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Calendar View */
+.contractor-calendar-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.calendar-header button {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.calendar-header button:hover {
+  background-color: #f0f0f0;
+}
+
+.calendar-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 600;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.calendar-day {
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+  background-color: #f5f5f5;
+}
+
+.calendar-day.selected {
+  background-color: #e6f0fd;
+  border-color: #4a90e2;
+}
+
+.calendar-day.other-month {
+  color: #aaa;
+  background-color: #f9f9f9;
+}
+
+.calendar-day.has-appointments {
+  font-weight: 600;
+}
+
+.appointment-indicator {
+  position: absolute;
+  bottom: 4px;
+  color: #4a90e2;
+  font-size: 14px;
+}
+
+.selected-date-info {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.selected-date-info h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: #333;
+}
+
+.date-appointments {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Contractor List View */
+.contractor-list-view {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  height: 100%;
+}
+
+.contractor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.contractor-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.contractor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contractor-card.selected {
+  border-left: 4px solid #4a90e2;
+}
+
+.contractor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.contractor-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.contractor-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: #e6f0fd;
+  color: #4a90e2;
+}
+
+.contractor-status.inactive {
+  background-color: #f9e6e6;
+  color: #e24a4a;
+}
+
+.contractor-details p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.contractor-schedule {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.contractor-schedule h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: #333;
+}
+
+.contractor-appointments {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Team Management View */
+.team-management-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.team-management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.team-management-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.add-contractor-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-contractor-button:hover {
+  background-color: #3a7bc8;
+}
+
+.team-management-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.team-member-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.team-member-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.team-member-header h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.team-member-details p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.team-member-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.team-member-actions button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-button {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.edit-button:hover {
+  background-color: #e0e0e0;
+}
+
+.schedule-button {
+  background-color: #e6f0fd;
+  color: #4a90e2;
+}
+
+.schedule-button:hover {
+  background-color: #d6e6fa;
+}
+
+.status-button {
+  background-color: #f9e6e6;
+  color: #e24a4a;
+}
+
+.status-button:hover {
+  background-color: #f5d6d6;
+}
+
+/* Performance Metrics View */
+.performance-metrics-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.performance-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.performance-filters select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.performance-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.performance-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.performance-header h4 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+.performance-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #777;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.performance-actions {
+  margin-top: 16px;
+}
+
+.view-details-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.view-details-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Appointment Cards */
+.appointment-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #4a90e2;
+}
+
+.appointment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.appointment-header h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.appointment-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.appointment-status.scheduled {
+  background-color: #e6f0fd;
+  color: #4a90e2;
+}
+
+.appointment-status.completed {
+  background-color: #e6f9e6;
+  color: #4ae24a;
+}
+
+.appointment-status.unassigned {
+  background-color: #f9f0e6;
+  color: #e2a44a;
+}
+
+.appointment-status.cancelled {
+  background-color: #f9e6e6;
+  color: #e24a4a;
+}
+
+.appointment-details p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.appointment-actions {
+  margin-top: 12px;
+}
+
+.assign-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.assign-button:hover {
+  background-color: #3a7bc8;
+}
+
+.no-appointments {
+  color: #777;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Assignment Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.assignment-modal {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.assignment-modal h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 20px;
+  color: #333;
+}
+
+.appointment-summary {
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.appointment-summary p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-actions button:first-child {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-actions button:first-child:hover {
+  background-color: #e0e0e0;
+}
+
+.submit-button {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #3a7bc8;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 16px;
+  color: #777;
+} 

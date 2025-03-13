@@ -4,6 +4,7 @@ import HeroSection from '../components/HeroSection';
 import Services from '../components/Services';
 import Testimonials from '../components/Testimonials';
 import EstimateCalculator from '../components/EstimateCalculator';
+import FeedbackForm from '../components/FeedbackForm';
 import Footer from '../components/Footer';
 
 function Home() {
@@ -19,7 +20,7 @@ function Home() {
       <Services />
       <Testimonials />
       <EstimateCalculator id="estimate-calculator" />
-      
+      <FeedbackForm />
       <Footer />
     </div>
   );
