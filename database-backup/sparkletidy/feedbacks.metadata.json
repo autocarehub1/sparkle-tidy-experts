@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"contractorId":{"$numberInt":"1"},"email":{"$numberInt":"1"},"serviceDate":{"$numberInt":"1"}},"name":"contractorId_1_email_1_serviceDate_1","background":true,"unique":true}],"uuid":"55f31633fb6046189e2ee4ba45020bf5","collectionName":"feedbacks","type":"collection"}
