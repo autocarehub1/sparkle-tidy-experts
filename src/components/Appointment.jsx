@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Logo from './Logo';
 import './Appointment.css';
+import apiClient from '../api/axios';
+import config from '../config';
 
-// Configure axios to use the backend URL
-axios.defaults.baseURL = 'http://localhost:5003';
-axios.defaults.timeout = 10000; // 10 seconds timeout
-axios.defaults.headers.post['Content-Type'] = 'application/json';
+// No need for axios config here - using the centralized axios instance
 
 function Appointment() {
   const navigate = useNavigate();
@@ -267,8 +265,8 @@ function Appointment() {
           estimatedPrice: formattedPrice
         });
         
-        // Send appointment data to the server
-        const response = await axios.post('/api/send-appointment', {
+        // Send appointment data to the server using the apiClient
+        const response = await apiClient.post('/api/send-appointment', {
           ...formData,
           estimatedPrice: formattedPrice
         });

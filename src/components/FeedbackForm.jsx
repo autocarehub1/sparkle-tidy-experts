@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './FeedbackForm.css';
-import axios from 'axios';
+import apiClient from '../api/axios';
+import config from '../config';
 
 const FeedbackForm = () => {
   const [contractors, setContractors] = useState([]);
@@ -23,7 +24,7 @@ const FeedbackForm = () => {
         setLoading(true);
         // Try to fetch real data first
         try {
-          const response = await axios.get('http://localhost:5003/api/contractors');
+          const response = await apiClient.get('/api/contractors');
           if (response.data && response.data.length > 0) {
             setContractors(response.data.map(contractor => ({
               id: contractor._id,
@@ -83,7 +84,7 @@ const FeedbackForm = () => {
       
       // Try to post to the real API
       try {
-        await axios.post('http://localhost:5003/api/feedback', formData);
+        await apiClient.post('/api/feedback', formData);
       } catch (err) {
         console.error('Error posting to real API:', err);
         // Continue with mock success even if real API fails

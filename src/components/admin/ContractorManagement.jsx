@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ContractorManagement.css';
-import axios from 'axios';
+import apiClient from '../../api/axios';
+import config from '../../config';
 
 const ContractorManagement = () => {
   const [contractors, setContractors] = useState([]);
@@ -52,7 +53,7 @@ const ContractorManagement = () => {
   const fetchContractors = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5003/api/contractors');
+      const response = await apiClient.get('/api/contractors');
       console.log('Fetched contractors:', response.data);
       setContractors(response.data);
       setLoading(false);
@@ -207,8 +208,8 @@ const ContractorManagement = () => {
 
       if (selectedContractor) {
         // Update existing contractor
-        const response = await axios.put(
-          `http://localhost:5003/api/contractors/${selectedContractor._id}`,
+        const response = await apiClient.put(
+          `/api/contractors/${selectedContractor._id}`,
           submissionData
         );
         const updatedContractor = response.data;
@@ -217,7 +218,7 @@ const ContractorManagement = () => {
         ));
       } else {
         // Add new contractor
-        const response = await axios.post('http://localhost:5003/api/contractors', submissionData);
+        const response = await apiClient.post('/api/contractors', submissionData);
         const newContractor = response.data;
         setContractors([...contractors, newContractor]);
       }
@@ -242,9 +243,11 @@ const ContractorManagement = () => {
 
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:5003/api/contractors/${contractorId}`);
+      await apiClient.delete(`/api/contractors/${contractorId}`);
       setContractors(contractors.filter(c => c._id !== contractorId));
-      setSelectedContractor(null);
+      if (selectedContractor && selectedContractor._id === contractorId) {
+        setSelectedContractor(null);
+      }
       setShowAddForm(false);
       setError('');
     } catch (err) {

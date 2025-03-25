@@ -2,6 +2,7 @@ module.exports = {
   apps: [{
     name: "sparkle-tidy-experts",
     script: "server/index.js",
+    cwd: "/root/sparkle-tidy-experts",
     env: {
       NODE_ENV: "production",
       PORT: 5003

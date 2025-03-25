@@ -21,12 +21,36 @@ const NotificationSettings = require('./models/NotificationSettings');
 const Transaction = require('./models/Transaction');
 const Client = require('./models/Client');
 
-// Middleware
-app.use(cors({
-  origin: ['http://localhost:5004', 'http://localhost:3000', 'http://localhost:5002'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+// Define the frontend URL based on environment
+const FRONTEND_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://www.sparkletidy.com' 
+  : 'http://localhost:3000';
+
+// Define allowed origins based on environment
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://sparkletidy.com', 'https://www.sparkletidy.com', 'http://sparkletidy.com', 'http://www.sparkletidy.com']
+  : ['http://localhost:5004', 'http://localhost:3000', 'http://localhost:5002'];
+
+// CORS options with more detailed configuration
+const corsOptions = {
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`Origin ${origin} not allowed by CORS policy`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+// Configure CORS with allowed origins
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Global variable to store the transporter
@@ -160,7 +184,7 @@ app.post('/api/send-estimate', async (req, res) => {
             <p>This estimate is based on the information you provided. The final price may vary based on the specific requirements of your space.</p>
             
             <div style="margin: 30px 0; text-align: center;">
-              <a href="http://localhost:5004/appointments" style="background-color: #4a90e2; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold;">Schedule Your Cleaning</a>
+              <a href="${FRONTEND_URL}/appointments" style="background-color: #4a90e2; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold;">Schedule Your Cleaning</a>
             </div>
             
             <p>If you have any questions or would like to discuss your cleaning needs further, please don't hesitate to contact us at <a href="mailto:info@sparkletidy.com">info@sparkletidy.com</a> or call us at (210) 555-1234.</p>

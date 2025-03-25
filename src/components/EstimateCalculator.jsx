@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import './EstimateCalculator.css';
+import apiClient from '../api/axios';
+import config from '../config';
 
-// Configure axios to use the backend URL
-axios.defaults.baseURL = 'http://localhost:5003';
-axios.defaults.timeout = 10000; // 10 seconds timeout
-axios.defaults.headers.post['Content-Type'] = 'application/json';
+// No need for axios config here - using the centralized axios instance
 
 function EstimateCalculator() {
   const [formData, setFormData] = useState({
@@ -119,8 +117,8 @@ function EstimateCalculator() {
         
         console.log('Submitting estimate data:', dataToSend);
         
-        // Send data to backend
-        const response = await axios.post('/api/send-estimate', dataToSend);
+        // Send data to backend using apiClient
+        const response = await apiClient.post('/api/send-estimate', dataToSend);
         
         console.log('Server response:', response.data);
         

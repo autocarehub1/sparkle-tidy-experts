@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ContractorPerformance.css';
-import axios from 'axios';
+import apiClient from '../../api/axios';
+import config from '../../config';
 
 const ContractorPerformance = () => {
   const [contractors, setContractors] = useState([]);
@@ -18,7 +19,7 @@ const ContractorPerformance = () => {
         setLoading(true);
         // Try to fetch real data first
         try {
-          const response = await axios.get('http://localhost:5003/api/contractors');
+          const response = await apiClient.get('/api/contractors');
           if (response.data && response.data.length > 0) {
             // Transform the data to include performance metrics
             const contractorsWithMetrics = response.data.map(contractor => ({
@@ -192,7 +193,7 @@ const ContractorPerformance = () => {
       try {
         // Try to fetch real feedback data
         try {
-          const response = await axios.get('http://localhost:5003/api/feedback');
+          const response = await apiClient.get('/api/feedback');
           if (response.data && response.data.length > 0) {
             // Group feedback by contractor ID
             const feedbackByContractor = {};
@@ -254,7 +255,7 @@ const ContractorPerformance = () => {
     };
 
     fetchContractors();
-  }, []);
+  }, [timeRange, sortBy, sortOrder]);
 
   const handleSort = (field) => {
     if (sortBy === field) {
