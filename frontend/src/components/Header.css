@@ -1,0 +1,138 @@
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 20px 0;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.site-header.scrolled {
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4a90e2;
+  margin: 0;
+}
+
+.main-nav ul {
+  display: flex;
+  gap: 30px;
+}
+
+.main-nav a {
+  font-weight: 500;
+  position: relative;
+  padding: 5px 0;
+}
+
+.main-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #4a90e2;
+  transition: width 0.3s;
+}
+
+.main-nav a:hover::after {
+  width: 100%;
+}
+
+.nav-cta {
+  background-color: #4a90e2;
+  color: white !important;
+  padding: 10px 20px !important;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.nav-cta:hover {
+  background-color: #3a7bc8;
+}
+
+.nav-cta::after {
+  display: none !important;
+}
+
+.nav-highlight {
+  color: #ff6b6b !important;
+  font-weight: 600 !important;
+  border: 2px solid #ff6b6b;
+  padding: 8px 18px !important;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.nav-highlight:hover {
+  background-color: #ff6b6b;
+  color: white !important;
+}
+
+.nav-highlight::after {
+  display: none !important;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #4a90e2;
+  border-radius: 3px;
+  transition: all 0.3s;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  .main-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    background-color: white;
+    padding: 80px 30px;
+    transition: right 0.3s ease;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .main-nav.mobile-open {
+    right: 0;
+  }
+  
+  .main-nav ul {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .site-header.scrolled {
+    padding: 15px 0;
+  }
+} 

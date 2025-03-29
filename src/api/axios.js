@@ -1,50 +1,50 @@
 import axios from 'axios';
-import config from '../config';
+
+// Determine API base URL based on environment
+const getApiBaseUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://api.sparkletidy.com';
+  } else {
+    return 'http://localhost:5003';
+  }
+};
 
 // Create axios instance with default config
-const apiClient = axios.create({
-  baseURL: config.API_URL,
-  timeout: 15000,
+const axiosInstance = axios.create({
+  baseURL: getApiBaseUrl(),
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
   }
 });
 
-// Add request interceptor to handle environment-specific configs
-apiClient.interceptors.request.use(
-  (axiosConfig) => {
-    // For secure endpoints, ensure we're using HTTPS in production
-    if (process.env.NODE_ENV === 'production' && 
-        config.SECURE_ENDPOINTS.some(endpoint => axiosConfig.url.includes(endpoint))) {
-      // Force HTTPS for secure endpoints
-      if (!axiosConfig.baseURL.startsWith('https://')) {
-        axiosConfig.baseURL = axiosConfig.baseURL.replace('http://', 'https://');
-      }
+// Add request interceptor for authentication
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return axiosConfig;
+    return config;
   },
   (error) => {
     return Promise.reject(error);
   }
 );
 
-// Add response interceptor for consistent error handling
-apiClient.interceptors.response.use(
-  (response) => response,
+// Add response interceptor for handling common errors
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
   (error) => {
-    // Log errors in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('API request failed:', error);
+    // Handle authentication errors
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('adminToken');
+      window.location.href = '/admin/login';
     }
-    
-    // Handle network errors
-    if (error.message === 'Network Error') {
-      console.error('Network error - please check your connection');
-    }
-    
     return Promise.reject(error);
   }
 );
 
-export default apiClient; 
+export default axiosInstance; 

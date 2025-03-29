@@ -1,0 +1,43 @@
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-container.small {
+  gap: 6px;
+}
+
+.logo-container.large {
+  gap: 14px;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease;
+}
+
+.logo-container:hover .logo-icon {
+  transform: rotate(10deg);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logo-name {
+  font-weight: 700;
+  color: #4a90e2;
+  letter-spacing: 0.5px;
+}
+
+.logo-tagline {
+  font-weight: 500;
+  color: #555;
+  font-size: 0.8em;
+} 

@@ -1,0 +1,259 @@
+.appointment-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.loading-message {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+/* Stats Grid Styles */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.appointments-icon {
+  background-color: #e3f2fd;
+  color: #4a90e2;
+}
+
+.clients-icon {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.contractors-icon {
+  background-color: #fff8e1;
+  color: #ffc107;
+}
+
+.revenue-icon {
+  background-color: #f3e5f5;
+  color: #9c27b0;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.stat-details {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stat-detail {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.detail-label {
+  color: #666;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.stat-change {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stat-change.positive {
+  color: #4caf50;
+}
+
+.stat-change.negative {
+  color: #f44336;
+}
+
+.stat-period {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Recent Appointments Styles */
+.recent-appointments {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+.recent-appointments h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.appointments-table-container {
+  overflow-x: auto;
+}
+
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.appointments-table th {
+  text-align: left;
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.appointments-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+  color: #333;
+}
+
+.appointments-table tr:last-child td {
+  border-bottom: none;
+}
+
+.appointments-table tr:hover td {
+  background-color: #f8f9fa;
+}
+
+.unassigned {
+  color: #f44336;
+  font-style: italic;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.scheduled {
+  background-color: #e3f2fd;
+  color: #4a90e2;
+}
+
+.status-badge.completed {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.status-badge.unassigned {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+/* Quick Actions Styles */
+.quick-actions {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+.quick-actions h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.action-button {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-button:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.action-icon {
+  font-size: 24px;
+}
+
+.action-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .action-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+} 
