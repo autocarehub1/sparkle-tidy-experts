@@ -1,0 +1,434 @@
+.contractor-management {
+  display: flex;
+  height: 100%;
+  background-color: #f8fafc;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.contractor-list-section {
+  flex: 1;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contractor-list-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contractor-list-header h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.contractor-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-filter-group {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background-color: white;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.status-filter {
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background-color: white;
+  font-size: 0.875rem;
+  min-width: 120px;
+}
+
+.add-contractor-btn {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-contractor-btn:hover {
+  background-color: #2563eb;
+}
+
+.contractor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.contractor-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.contractor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.contractor-card.selected {
+  border-color: #3b82f6;
+}
+
+.contractor-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.contractor-email,
+.contractor-phone {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.contractor-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.stat-value {
+  font-size: 0.875rem;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  margin-top: 0.75rem;
+}
+
+.status-badge.active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.contractor-details-section {
+  flex: 2;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.no-selection-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.contractor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.edit-button {
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-button:hover {
+  background-color: #e2e8f0;
+}
+
+.form-section {
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.form-section h3 {
+  margin: 0 0 1rem 0;
+  color: #1e293b;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.specialties-grid,
+.documents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.specialty-checkbox,
+.document-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.availability-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.availability-day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.availability-day h4 {
+  margin: 0;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.time-slot-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cancel-button {
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-button:hover {
+  background-color: #e2e8f0;
+}
+
+.save-button {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.save-button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.error-message {
+  padding: 0.75rem;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 1024px) {
+  .contractor-management {
+    flex-direction: column;
+  }
+
+  .contractor-list-section {
+    max-width: none;
+  }
+
+  .contractor-details-section {
+    max-height: 800px;
+  }
+}
+
+@media (max-width: 640px) {
+  .contractor-management {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .contractor-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-filter-group {
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .specialties-grid,
+  .documents-grid,
+  .availability-grid {
+    grid-template-columns: 1fr;
+  }
+} 

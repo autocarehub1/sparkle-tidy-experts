@@ -1,75 +1,141 @@
 # Sparkle & Tidy Experts
 
-A professional cleaning service website with an estimate calculator feature. This project includes a React frontend and an Express backend for handling estimate emails.
-
-## Features
-
-- Modern, responsive design
-- Interactive cleaning service estimate calculator
-- Email functionality for sending estimates to clients
-- Service showcase
-- Customer testimonials
-- Mobile-friendly interface
-
-## Tech Stack
-
-- **Frontend**: React, CSS
-- **Backend**: Node.js, Express
-- **Email**: Nodemailer
+A professional cleaning service website with an estimate calculator, appointment booking, and admin dashboard.
 
 ## Project Structure
 
-- `src/` - React frontend code
-  - `components/` - Reusable UI components
-  - `pages/` - Page components
-- `server/` - Express backend code
+This project is organized as a monorepo with three main components:
 
-## Setup Instructions
+```
+sparkle-tidy-experts/
+├── backend/         # Node.js Express backend API
+├── frontend/        # React frontend client website
+├── admin/           # React admin dashboard
+├── deploy.sh        # Deployment script
+└── package.json     # Root package.json for workspace management
+```
+
+### Backend
+
+The backend is a Node.js Express server that provides the API endpoints for the application.
+
+```
+backend/
+├── config/          # Configuration files
+├── controllers/     # Request handlers
+├── models/          # Mongoose models
+├── routes/          # API routes
+├── index.js         # Main entry point
+└── package.json     # Backend dependencies
+```
+
+### Frontend
+
+The frontend is a React application for the client-facing website.
+
+```
+frontend/
+├── components/      # React components
+├── pages/           # Page components
+├── styles/          # CSS files
+├── utils/           # Utility functions and API client
+├── App.js           # Main App component
+├── index.js         # Entry point
+└── package.json     # Frontend dependencies
+```
+
+### Admin
+
+The admin dashboard is a separate React application for managing the business.
+
+```
+admin/
+├── components/      # Admin-specific components
+├── pages/           # Admin page components
+├── styles/          # Admin CSS files
+├── utils/           # Admin utility functions
+├── App.js           # Admin App component
+├── index.js         # Admin entry point
+└── package.json     # Admin dependencies
+```
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v16+)
 - npm or yarn
-
-### Environment Variables
-
-Create a `.env` file in the root directory with the following variables:
-
-```
-PORT=5000
-EMAIL_HOST=your-smtp-host
-EMAIL_PORT=your-smtp-port
-EMAIL_PASSWORD=your-email-password
-```
+- MongoDB
 
 ### Installation
 
 1. Clone the repository
-2. Install dependencies:
+   ```
+   git clone https://github.com/yourusername/sparkle-tidy-experts.git
+   cd sparkle-tidy-experts
+   ```
 
-```bash
-npm install
+2. Install dependencies
+   ```
+   npm install
+   ```
+
+3. Set up environment variables
+   ```
+   cp backend/.env.example backend/.env
+   ```
+   Edit the `.env` file to include your MongoDB URI and other configuration.
+
+### Development
+
+Start all services in development mode:
+```
+npm start
 ```
 
-3. Start the development server:
-
-```bash
-npm run dev
+Or start each service individually:
+```
+npm run start:backend
+npm run start:frontend
+npm run start:admin
 ```
 
-This will start both the React frontend and Express backend concurrently.
+### Building for Production
 
-## Available Scripts
+Build all applications:
+```
+npm run build
+```
 
-- `npm start` - Runs the React frontend
-- `npm run server` - Runs the Express backend
-- `npm run dev` - Runs both frontend and backend
-- `npm run build` - Builds the React app for production
+### Deployment
 
-## Deployment
+Update the `VPS_IP` in `deploy.sh` and run:
+```
+npm run deploy
+```
 
-The frontend can be deployed to services like Netlify, Vercel, or GitHub Pages. The backend can be deployed to services like Heroku, Render, or Railway.
+## Access URLs
 
-## License
+- Frontend: http://localhost:3000
+- Admin Dashboard: http://localhost:3001
+- Backend API: http://localhost:5003
 
-MIT 
+In production:
+- Frontend: https://www.sparkletidy.com
+- Admin Dashboard: https://admin.sparkletidy.com
+- Backend API: https://www.sparkletidy.com/api (same domain with /api path)
+
+## Admin Access
+
+- Username: admin
+- Password: sparkletidy2024
+
+## Features
+
+- Estimate calculator for cleaning services
+- Appointment scheduling
+- Client management
+- Contractor management and scheduling
+- Financial reporting and analytics
+- Company settings and notification management
+- Responsive design for all devices 

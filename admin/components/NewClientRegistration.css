@@ -1,0 +1,259 @@
+.new-client-registration {
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.registration-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.registration-header h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.registration-header p {
+  color: #666;
+  font-size: 16px;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.registration-form {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.form-section {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.form-section h3 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #2d3748;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.checkbox-group label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.submit-button {
+  background-color: #4a90e2;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #357abd;
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  background-color: #a0c3e8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.success-message {
+  text-align: center;
+  padding: 40px;
+  background-color: #f0fdf4;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #22c55e;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin: 0 auto 20px;
+}
+
+.success-message h3 {
+  color: #15803d;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.success-message p {
+  color: #166534;
+  margin-bottom: 20px;
+}
+
+.new-registration-btn {
+  background-color: #22c55e;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.new-registration-btn:hover {
+  background-color: #15803d;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .new-client-registration {
+    padding: 20px;
+  }
+
+  .form-section {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+}
+
+.success-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.mock-data-btn {
+  background-color: #6366f1;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mock-data-btn:hover {
+  background-color: #4f46e5;
+  transform: translateY(-1px);
+}
+
+.mock-data-btn:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.mock-data-section {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.mock-data-info {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #64748b;
+} 
