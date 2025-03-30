@@ -4,13 +4,11 @@
 # Run this script from your local machine
 
 # Configuration - Change these values as needed
-VPS_IP="YOUR_VPS_IP_ADDRESS"
+VPS_IP="69.62.65.2"  # Replace with your actual VPS IP
 VPS_USER="root"
 PROJECT_DIR="/Users/emmanueleleruja/Desktop/Development/hackathon_1"
 REMOTE_DIR="/var/www/sparkletidy.com"
-BACKEND_NAME="sparkle-tidy-experts-backend.zip"
-FRONTEND_NAME="sparkle-tidy-experts-frontend.zip"
-ADMIN_NAME="sparkle-tidy-experts-admin.zip"
+BUILD_NAME="sparkle-tidy-experts.zip"
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -47,111 +45,128 @@ check_success() {
   fi
 }
 
-# Build React frontend
+# Build the app
+show_status "Building the application"
+cd "$PROJECT_DIR"
+
+# Build frontend
+cd frontend
 show_status "Building React frontend"
-cd "$PROJECT_DIR/frontend"
 NODE_ENV=production npm run build
 check_success "Failed to build React frontend" "exit"
-echo
 
-# Build React admin dashboard
+# Build admin
+cd ../admin
 show_status "Building React admin dashboard"
-cd "$PROJECT_DIR/admin"
 NODE_ENV=production npm run build
 check_success "Failed to build React admin dashboard" "exit"
-echo
 
-# Create zip files
-show_status "Creating zip files"
-cd "$PROJECT_DIR/backend"
-rm -f "../$BACKEND_NAME"
-zip -r "../$BACKEND_NAME" . -x "node_modules/*"
-
-cd "$PROJECT_DIR/frontend"
-rm -f "../$FRONTEND_NAME"
-zip -r "../$FRONTEND_NAME" build
-
-cd "$PROJECT_DIR/admin"
-rm -f "../$ADMIN_NAME"
-zip -r "../$ADMIN_NAME" build
-check_success "Failed to create zip files" "exit"
+# Create zip file with all components
+show_status "Creating deployment package"
+cd "$PROJECT_DIR"
+rm -f "$BUILD_NAME"
+zip -r "$BUILD_NAME" server frontend/build admin/build .env package.json package-lock.json -x "*/node_modules/*"
+check_success "Failed to create deployment package" "exit"
 echo
 
 # Upload to VPS
 show_status "Uploading to VPS"
-cd "$PROJECT_DIR"
-scp "$BACKEND_NAME" "$FRONTEND_NAME" "$ADMIN_NAME" "$VPS_USER@$VPS_IP:/tmp/"
+scp "$BUILD_NAME" "$VPS_USER@$VPS_IP:/tmp/"
 check_success "Failed to upload to VPS" "exit"
 echo
 
 # Execute commands on VPS
 show_status "Setting up on VPS"
 ssh "$VPS_USER@$VPS_IP" << EOF
-  # Check if directory exists
-  if [ ! -d "$REMOTE_DIR" ]; then
-    mkdir -p "$REMOTE_DIR"
-  fi
-
-  mkdir -p "$REMOTE_DIR/backend" "$REMOTE_DIR/frontend" "$REMOTE_DIR/admin"
+  # Create directories if they don't exist
+  mkdir -p "$REMOTE_DIR"
+  mkdir -p "$REMOTE_DIR/public"
+  mkdir -p "/var/www/admin.sparkletidy.com/public"
 
   # Stop existing PM2 process if running
   if command -v pm2 &>/dev/null; then
-    pm2 stop sparkle-tidy-experts 2>/dev/null || true
+    pm2 stop sparkle-tidy 2>/dev/null || true
   fi
 
   # Backup existing installation if it exists
-  if [ -f "$REMOTE_DIR/backend/package.json" ]; then
+  if [ -f "$REMOTE_DIR/package.json" ]; then
     BACKUP_DIR="/root/backups/sparkletidy-\$(date +%Y%m%d-%H%M%S)"
     mkdir -p "\$BACKUP_DIR"
     cp -r "$REMOTE_DIR" "\$BACKUP_DIR"
     echo "Backed up existing installation to \$BACKUP_DIR"
   fi
 
-  # Extract backend zip file
-  echo "Extracting backend files..."
-  unzip -o "/tmp/$BACKEND_NAME" -d "$REMOTE_DIR/backend"
+  # Extract files
+  echo "Extracting files..."
+  unzip -o "/tmp/$BUILD_NAME" -d "$REMOTE_DIR"
   
-  # Extract frontend zip file
-  echo "Extracting frontend files..."
-  unzip -o "/tmp/$FRONTEND_NAME" -d "$REMOTE_DIR/frontend"
+  # Copy frontend files to NGINX public directory
+  echo "Setting up frontend files..."
+  cp -r "$REMOTE_DIR/frontend/build/"* "$REMOTE_DIR/public/"
   
-  # Extract admin zip file
-  echo "Extracting admin files..."
-  unzip -o "/tmp/$ADMIN_NAME" -d "$REMOTE_DIR/admin"
+  # Copy admin files to NGINX public directory
+  echo "Setting up admin files..."
+  cp -r "$REMOTE_DIR/admin/build/"* "/var/www/admin.sparkletidy.com/public/"
   
   # Install dependencies
-  echo "Installing backend dependencies..."
-  cd "$REMOTE_DIR/backend"
+  echo "Installing dependencies..."
+  cd "$REMOTE_DIR"
   npm install --production
   
   # Set correct permissions
-  chown -R www-data:www-data "$REMOTE_DIR"
-  chmod -R 755 "$REMOTE_DIR"
+  chown -R www-data:www-data "$REMOTE_DIR" "/var/www/admin.sparkletidy.com"
+  chmod -R 755 "$REMOTE_DIR" "/var/www/admin.sparkletidy.com"
+  
+  # Setup environment variables
+  if [ ! -f "$REMOTE_DIR/.env" ]; then
+    echo "NODE_ENV=production" > "$REMOTE_DIR/.env"
+    echo "MONGODB_URI=mongodb://localhost:27017/sparkletidy" >> "$REMOTE_DIR/.env"
+    echo "PORT=5003" >> "$REMOTE_DIR/.env"
+  fi
   
   # Restart app with PM2
   if command -v pm2 &>/dev/null; then
     echo "Starting application with PM2..."
-    cd "$REMOTE_DIR/backend"
-    pm2 start index.js --name sparkle-tidy-experts || pm2 reload sparkle-tidy-experts
+    cd "$REMOTE_DIR"
+    pm2 start server/index.js --name sparkle-tidy || pm2 reload sparkle-tidy
     pm2 save
   else
     echo "PM2 not found. Please install PM2 and start the application manually."
   fi
   
-  # Restart NGINX if it exists
+  # Check if NGINX is installed and configuration exists
   if command -v nginx &>/dev/null; then
-    echo "Restarting NGINX..."
-    systemctl restart nginx
+    # Copy NGINX config if it exists in the package
+    if [ -f "$REMOTE_DIR/nginx.conf" ]; then
+      cp "$REMOTE_DIR/nginx.conf" /etc/nginx/nginx.conf
+    fi
+    
+    if [ -f "$REMOTE_DIR/sparkletidy.com.conf" ]; then
+      cp "$REMOTE_DIR/sparkletidy.com.conf" /etc/nginx/sites-available/
+      ln -sf /etc/nginx/sites-available/sparkletidy.com.conf /etc/nginx/sites-enabled/
+    fi
+    
+    echo "Testing NGINX configuration..."
+    nginx -t
+    
+    if [ $? -eq 0 ]; then
+      echo "Restarting NGINX..."
+      systemctl restart nginx
+    else
+      echo "WARNING: NGINX configuration test failed. Please fix the errors manually."
+    fi
+  else
+    echo "NGINX not found. Please install NGINX and configure it manually."
   fi
   
   # Clean up
-  rm "/tmp/$BACKEND_NAME" "/tmp/$FRONTEND_NAME" "/tmp/$ADMIN_NAME"
+  rm "/tmp/$BUILD_NAME"
   
   echo "Deployment completed!"
   
   # Run basic health check
   echo "Running basic health check..."
-  curl -s http://localhost:5003/ > /dev/null
+  curl -s http://localhost:5003/api/test
   if [ $? -eq 0 ]; then
     echo "Application is responding on port 5003"
   else
@@ -164,7 +179,9 @@ echo
 echo -e "${GREEN}=== Deployment Complete! ===${NC}"
 echo -e "Website should now be available at https://www.sparkletidy.com"
 echo -e "Admin should now be available at https://admin.sparkletidy.com"
+echo -e "API should now be available at https://api.sparkletidy.com"
+echo -e ""
 echo -e "To check the status, SSH into your VPS and run:"
-echo -e "  cd $REMOTE_DIR/backend && pm2 logs sparkle-tidy-experts"
+echo -e "  pm2 logs sparkle-tidy"
 echo -e "To troubleshoot issues, run:"
-echo -e "  cd $REMOTE_DIR && ./vps-troubleshoot.sh"
+echo -e "  ./vps-troubleshoot.sh"

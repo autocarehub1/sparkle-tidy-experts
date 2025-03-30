@@ -1,0 +1,130 @@
+.admin-login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 20px;
+}
+
+.admin-login-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 30px;
+}
+
+.admin-login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.admin-login-header h2 {
+  color: #4a90e2;
+  margin-bottom: 8px;
+  font-size: 26px;
+}
+
+.admin-login-header h3 {
+  color: #555;
+  font-weight: normal;
+  font-size: 18px;
+  margin-top: 0;
+}
+
+.admin-login-error {
+  background-color: #fff2f2;
+  color: #e74c3c;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+  border-left: 4px solid #e74c3c;
+}
+
+.admin-login-form {
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.admin-login-button {
+  width: 100%;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.admin-login-button:hover {
+  background-color: #357abd;
+}
+
+.admin-login-button:disabled {
+  background-color: #a0c4f0;
+  cursor: not-allowed;
+}
+
+.admin-login-footer {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.admin-login-footer p {
+  margin: 10px 0;
+}
+
+.admin-login-footer a {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+.admin-login-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .admin-login-card {
+    padding: 30px 20px;
+  }
+  
+  .admin-login-header h2 {
+    font-size: 22px;
+  }
+  
+  .admin-login-header h3 {
+    font-size: 16px;
+  }
+} 

@@ -1,16 +1,20 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './pages/AdminLogin';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AdminLogin from './pages/AdminLogin';
 import Dashboard from './pages/Dashboard';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import './styles/App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      <Router>
         <Routes>
-          <Route path="/admin/login" element={<Login />} />
+          {/* Redirect root to admin login */}
+          <Route path="/" element={<Navigate to="/admin/login" replace />} />
+          
+          {/* Admin routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route 
             path="/admin/dashboard/*" 
             element={
@@ -19,20 +23,13 @@ function App() {
               </AdminProtectedRoute>
             } 
           />
-          <Route path="*" element={<Navigate to="/admin/dashboard" />} />
+          
+          {/* Fallback redirect */}
+          <Route path="*" element={<Navigate to="/admin/login" replace />} />
         </Routes>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
-
-// Navigation helper component
-const Navigate = ({ to }) => {
-  React.useEffect(() => {
-    window.location.href = to;
-  }, [to]);
-  
-  return <div>Redirecting...</div>;
-};
 
 export default App; 

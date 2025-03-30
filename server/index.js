@@ -28,8 +28,8 @@ const FRONTEND_URL = process.env.NODE_ENV === 'production'
 
 // Define allowed origins based on environment
 const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? ['https://sparkletidy.com', 'https://www.sparkletidy.com', 'http://sparkletidy.com', 'http://www.sparkletidy.com']
-  : ['http://localhost:5004', 'http://localhost:3000', 'http://localhost:5002'];
+  ? ['https://sparkletidy.com', 'https://www.sparkletidy.com', 'https://api.sparkletidy.com', 'https://admin.sparkletidy.com']
+  : ['http://localhost:5004', 'http://localhost:3000', 'http://localhost:5002', 'http://localhost:5003', 'http://localhost:3001'];
 
 // CORS options with more detailed configuration
 const corsOptions = {
