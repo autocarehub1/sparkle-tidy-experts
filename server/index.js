@@ -154,6 +154,16 @@ app.post('/api/send-estimate', async (req, res) => {
     : '0.00';
   
   try {
+    // Ensure transporter is initialized
+    if (!transporter) {
+      console.log('Email transporter not initialized, attempting to initialize now...');
+      await verifyConnection();
+      
+      if (!transporter) {
+        throw new Error('Failed to initialize email transporter');
+      }
+    }
+    
     console.log('Sending client estimate email to:', email);
     
     // Email to client
@@ -401,12 +411,26 @@ app.post('/api/send-appointment', async (req, res) => {
 // Verify SMTP connection when the server starts
 verifyConnection().catch(console.error);
 
-// Simple test endpoint
+// Add a simple test endpoint
 app.get('/api/test', (req, res) => {
+  res.status(200).json({ success: true, message: 'Server is running' });
+});
+
+// Add a health check endpoint
+app.get('/api/health', (req, res) => {
+  // Check if transporter exists
+  const emailServiceStatus = transporter ? 'available' : 'unavailable';
+  
+  // Check MongoDB connection
+  const mongoConnectionStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  
   res.status(200).json({
     success: true,
-    message: 'Server is running correctly',
-    email: 'info@sparkletidy.com'
+    message: 'Server is healthy',
+    services: {
+      emailService: emailServiceStatus,
+      database: mongoConnectionStatus
+    }
   });
 });
 
@@ -1096,6 +1120,15 @@ app.post('/api/generate-mock-clients', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  
+  // Initialize email transporter when server starts
+  try {
+    await verifyConnection();
+    console.log('Email service initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize email service:', error);
+    console.log('The server will continue to run, but email functionality might not work correctly');
+  }
 }); 

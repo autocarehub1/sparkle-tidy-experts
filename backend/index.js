@@ -135,11 +135,21 @@ app.post('/api/send-estimate', async (req, res) => {
     : '0.00';
   
   try {
+    // Ensure transporter is initialized
+    if (!transporter) {
+      console.log('Email transporter not initialized, attempting to initialize now...');
+      await verifyConnection();
+      
+      if (!transporter) {
+        throw new Error('Failed to initialize email transporter');
+      }
+    }
+    
     console.log('Sending client estimate email to:', email);
     
     // Email to client
     const clientEmail = await transporter.sendMail({
-      from: `"Sparkle & Tidy Experts" <info@sparkletidy.com>`,
+      from: `"Sparkle & Tidy Experts" <${config.email.auth.user}>`,
       to: email,
       subject: 'Your Cleaning Estimate from Sparkle & Tidy Experts',
       html: `
@@ -165,19 +175,19 @@ app.post('/api/send-estimate', async (req, res) => {
             <p>This estimate is based on the information you provided. The final price may vary based on the specific requirements of your space.</p>
             
             <div style="margin: 30px 0; text-align: center;">
-              <a href="${FRONTEND_URL}/appointments" style="background-color: #4a90e2; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold;">Schedule Your Cleaning</a>
+              <a href="${config.frontendUrl}/appointments" style="background-color: #4a90e2; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold;">Schedule Your Cleaning</a>
             </div>
             
-            <p>If you have any questions or would like to discuss your cleaning needs further, please don't hesitate to contact us at <a href="mailto:info@sparkletidy.com">info@sparkletidy.com</a> or call us at (210) 555-1234.</p>
+            <p>If you have any questions or would like to discuss your cleaning needs further, please don't hesitate to contact us at <a href="mailto:${config.email.auth.user}">${config.email.auth.user}</a> or call us at (210) 555-1234.</p>
             
-              <p>Thank you for considering Sparkle & Tidy Experts for your cleaning needs!</p>
+            <p>Thank you for considering Sparkle & Tidy Experts for your cleaning needs!</p>
             
             <p>Best regards,<br>The Sparkle & Tidy Team</p>
           </div>
           
           <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #666;">
             <p>© ${new Date().getFullYear()} Sparkle & Tidy Experts. All rights reserved.</p>
-            <p>123 Main Street, San Antonio, TX • (210) 555-1234 • <a href="mailto:info@sparkletidy.com">info@sparkletidy.com</a></p>
+            <p>123 Main Street, San Antonio, TX • (210) 555-1234 • <a href="mailto:${config.email.auth.user}">${config.email.auth.user}</a></p>
           </div>
         </div>
       `
@@ -194,8 +204,8 @@ app.post('/api/send-estimate', async (req, res) => {
     
     // Email to business owner
     const ownerEmail = await transporter.sendMail({
-      from: `"Sparkle & Tidy Website" <info@sparkletidy.com>`,
-      to: 'info@sparkletidy.com', // Send to the business email
+      from: `"Sparkle & Tidy Website" <${config.email.auth.user}>`,
+      to: config.email.auth.user, // Send to the business email
       subject: 'New Estimate Request',
       html: `
         <div style="font-family: Arial, sans-serif;">
@@ -220,7 +230,7 @@ app.post('/api/send-estimate', async (req, res) => {
     
     console.log('Estimate emails sent successfully');
     console.log(`Client email sent to: ${email}`);
-    console.log(`Business notification sent to: info@sparkletidy.com`);
+    console.log(`Business notification sent to: ${config.email.auth.user}`);
     
     res.status(200).json({ success: true, message: 'Estimate sent successfully' });
   } catch (error) {
@@ -382,12 +392,25 @@ app.post('/api/send-appointment', async (req, res) => {
 // Verify SMTP connection when the server starts
 verifyConnection().catch(console.error);
 
-// Simple test endpoint
+// Add test endpoints for checking the server status
 app.get('/api/test', (req, res) => {
+  res.status(200).json({ success: true, message: 'Server is running' });
+});
+
+app.get('/api/health', (req, res) => {
+  // Check if transporter exists
+  const emailServiceStatus = transporter ? 'available' : 'unavailable';
+  
+  // Check MongoDB connection
+  const mongoConnectionStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  
   res.status(200).json({
     success: true,
-    message: 'Server is running correctly',
-    email: 'info@sparkletidy.com'
+    message: 'Server is healthy',
+    services: {
+      emailService: emailServiceStatus,
+      database: mongoConnectionStatus
+    }
   });
 });
 
@@ -1088,8 +1111,17 @@ if (config.nodeEnv === 'production') {
 }
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} in ${config.nodeEnv} mode`);
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT} - Open http://localhost:${PORT}/api/test in your browser to test`);
+  
+  // Initialize email transporter
+  try {
+    await verifyConnection();
+    console.log('Email service initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize email service:', error);
+    console.log('Email functionality may not work correctly');
+  }
 });
 
 module.exports = app; 

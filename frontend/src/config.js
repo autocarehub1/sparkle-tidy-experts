@@ -1,21 +1,21 @@
-const isDevelopment = process.env.NODE_ENV === 'development';
+// Environment detection
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
-// API and application URLs
+// Configuration object
 const config = {
-  // API URL for backend requests
-  API_URL: isDevelopment ? 'http://localhost:5003' : 'https://www.sparkletidy.com',
+  // API URL for backend
+  API_URL: isDevelopment ? 'http://localhost:5003' : 'https://api.sparkletidy.com',
   
-  // Frontend URL for links in emails and redirects
-  APP_URL: isDevelopment ? 'http://localhost:3000' : 'https://www.sparkletidy.com',
+  // App name
+  APP_NAME: 'Sparkle & Tidy Experts',
   
-  // API endpoints that should use HTTPS regardless of environment
+  // List of secure endpoints that should always use HTTPS
   SECURE_ENDPOINTS: ['/api/send-appointment', '/api/send-estimate', '/api/feedback'],
   
-  // Company information
-  COMPANY_NAME: 'Sparkle & Tidy Experts',
-  COMPANY_EMAIL: 'info@sparkletidy.com',
-  COMPANY_PHONE: '(210) 555-1234',
-  COMPANY_ADDRESS: '123 Main Street, San Antonio, TX'
+  // Authentication
+  AUTH: {
+    TOKEN_KEY: 'sparkle_tidy_auth_token',
+  }
 };
 
 export default config; 
