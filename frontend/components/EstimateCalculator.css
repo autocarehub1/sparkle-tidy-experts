@@ -115,7 +115,74 @@ textarea {
 .error-message {
   color: #e74c3c;
   margin-top: 15px;
-  text-align: center;
+  text-align: left;
+  background-color: #fdecea;
+  border-radius: 6px;
+  padding: 15px;
+  border-left: 4px solid #e74c3c;
+}
+
+.error-container {
+  background-color: #fdecea;
+  border-radius: 6px;
+  padding: 15px 20px;
+  border-left: 4px solid #e74c3c;
+  margin: 20px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.error-container p {
+  text-align: left;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 15px;
+}
+
+.error-container ul {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+.error-container li {
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.error-container a {
+  color: #3498db;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.error-container a:hover {
+  text-decoration: none;
+  color: #2980b9;
+}
+
+.error-message p {
+  text-align: left;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.retry-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 5px;
+}
+
+.retry-button:hover {
+  background-color: #2980b9;
+}
+
+.retry-button:active {
+  transform: scale(0.98);
 }
 
 .success-message {

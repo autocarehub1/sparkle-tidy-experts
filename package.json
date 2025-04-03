@@ -1,24 +1,22 @@
 {
-  "name": "sparkle-tidy-experts-monorepo",
+  "name": "sparkle-tidy-experts",
   "version": "1.0.0",
-  "description": "Monorepo for Sparkle & Tidy Experts cleaning service website",
-  "private": true,
-  "workspaces": [
-    "backend",
-    "frontend",
-    "admin"
-  ],
+  "description": "Sparkle & Tidy Experts cleaning services website",
+  "main": "index.js",
   "scripts": {
-    "start:backend": "cd backend && npm run dev",
-    "start:frontend": "cd frontend && npm start",
-    "start:admin": "cd admin && npm start",
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\" \"npm run start:admin\"",
+    "start": "cd backend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "build:frontend": "cd frontend && npm run build",
-    "build:admin": "cd admin && npm run build",
-    "build": "npm run build:frontend && npm run build:admin",
-    "deploy": "bash deploy.sh"
+    "build:backend": "cd backend && npm install --production",
+    "build": "npm run build:frontend && npm run build:backend",
+    "deploy:prepare": "npm run build && mkdir -p deployment && cp -r backend deployment/ && cp -r frontend/build deployment/frontend/build && cp package.json deployment/",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^7.6.0"
   }
 }

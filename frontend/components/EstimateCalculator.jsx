@@ -93,70 +93,103 @@ function EstimateCalculator() {
     // Calculate final estimate
     calculateEstimate();
     
-    // Maximum number of retry attempts
-    const maxRetries = 2;
-    let retryCount = 0;
-    let success = false;
-    
-    while (retryCount <= maxRetries && !success) {
-      try {
-        if (retryCount > 0) {
-          console.log(`Retry attempt ${retryCount}/${maxRetries}...`);
+    try {
+      // Make sure estimateResult has a properly formatted price
+      const dataToSend = {
+        ...formData,
+        estimateResult: {
+          ...estimateResult,
+          price: estimateResult && estimateResult.price ? 
+            (typeof estimateResult.price === 'string' ? estimateResult.price : estimateResult.price.toFixed(2)) 
+            : '0.00'
         }
-        
-        // Make sure estimateResult has a properly formatted price
-        const dataToSend = {
-          ...formData,
-          estimateResult: {
-            ...estimateResult,
-            price: estimateResult && estimateResult.price ? 
-              (typeof estimateResult.price === 'string' ? estimateResult.price : estimateResult.price.toFixed(2)) 
-              : '0.00'
-          }
-        };
-        
-        console.log('Submitting estimate data:', dataToSend);
-        
-        // Send data to backend using apiClient
-        const response = await apiClient.post('/api/send-estimate', dataToSend);
-        
-        console.log('Server response:', response.data);
-        
-        if (response.data.success) {
-          setSuccess(true);
-          success = true;
-        } else {
-          throw new Error(response.data.message || 'There was an error sending your estimate. Please try again.');
-        }
-      } catch (err) {
-        console.error(`Error submitting estimate (attempt ${retryCount + 1}/${maxRetries + 1}):`, err);
-        
-        if (retryCount === maxRetries) {
-          // This was the last attempt, show error to user
-          if (err.response) {
-            console.error('Server error response:', err.response.data);
-            setError(err.response.data.message || 'There was an error sending your estimate. Please try again or contact us directly at info@sparkletidy.com.');
-          } else if (err.request) {
-            console.error('No response received from server');
-            setError('Could not connect to the server. Please check your internet connection and try again, or contact us directly at info@sparkletidy.com.');
-          } else {
-            console.error('Error details:', err.message);
-            setError(err.message || 'There was an error sending your estimate. Please try again or contact us directly at info@sparkletidy.com.');
-          }
-        }
-        
-        retryCount++;
-        
-        if (retryCount <= maxRetries) {
-          // Wait before retrying (exponential backoff)
-          const delay = 1000 * Math.pow(2, retryCount - 1);
-          console.log(`Waiting ${delay}ms before retry...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-        }
+      };
+      
+      console.log('Submitting estimate data:', dataToSend);
+      
+      // Send data to backend using apiClient
+      const response = await apiClient.post('/api/send-estimate', dataToSend);
+      
+      console.log('Server response:', response.data);
+      
+      if (response.data.success) {
+        setSuccess(true);
+      } else {
+        throw new Error(response.data.message || 'There was an error sending your estimate. Please try again.');
       }
+    } catch (err) {
+      console.error('Error submitting estimate:', err);
+      
+      // Check if the error has a friendly message from the axios interceptor
+      if (err.isConnectionError && err.friendlyMessage) {
+        setError(
+          <div className="error-container">
+            <p>{err.friendlyMessage}</p>
+            <button 
+              type="button" 
+              className="retry-button" 
+              onClick={() => handleSubmit(new Event('retry'))}
+            >
+              Try Again
+            </button>
+          </div>
+        );
+      } else if (err.response) {
+        // Server returned an error response
+        console.error('Server error response:', err.response.data);
+        setError(
+          <div className="error-container">
+            <p>{err.response.data.message || 'There was an error processing your request.'}</p>
+            <button 
+              type="button" 
+              className="retry-button" 
+              onClick={() => handleSubmit(new Event('retry'))}
+            >
+              Try Again
+            </button>
+          </div>
+        );
+      } else if (err.request) {
+        // No response received from server
+        console.error('No response received from server');
+        setError(
+          <div className="error-container">
+            <p>Could not connect to the server. Please check your internet connection and try again.</p>
+            <p>If the problem persists, you can:</p>
+            <ul>
+              <li>Contact us directly at <a href={`mailto:${config.CONTACT.EMAIL}`}>{config.CONTACT.EMAIL}</a></li>
+              <li>
+                <button 
+                  type="button" 
+                  className="retry-button" 
+                  onClick={() => handleSubmit(new Event('retry'))}
+                >
+                  Try Again
+                </button>
+              </li>
+            </ul>
+          </div>
+        );
+      } else {
+        // Something else went wrong
+        console.error('Error details:', err.message);
+        setError(
+          <div className="error-container">
+            <p>{err.message || 'There was an error sending your estimate. Please try again.'}</p>
+            <p>If the problem persists, please contact us at <a href={`mailto:${config.CONTACT.EMAIL}`}>{config.CONTACT.EMAIL}</a>.</p>
+            <button 
+              type="button" 
+              className="retry-button" 
+              onClick={() => handleSubmit(new Event('retry'))}
+            >
+              Try Again
+            </button>
+          </div>
+        );
+      }
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
   
   return (

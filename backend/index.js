@@ -5,10 +5,32 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const config = require('./config/config');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
-const PORT = config.port || 5003;
+const PORT = process.env.PORT || 5003;
+const ALTERNATIVE_PORTS = [5004, 5005];
+
+// Connect to MongoDB
+mongoose.connect(config.mongodb.uri, config.mongodb.options)
+  .then(() => {
+    console.log('Connected to MongoDB successfully');
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err.message);
+    console.log('The server will continue to run, but database functionality will be unavailable');
+  });
+
+// Add connection error handler
+mongoose.connection.on('error', err => {
+  console.error('MongoDB connection error:', err);
+});
+
+// Add disconnection handler
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
 
 // Middleware
 app.use(express.json());
@@ -20,6 +42,39 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
+
+// Rate limiting in production
+if (config.rateLimit.enabled) {
+  console.log(`Setting up rate limiting: ${config.rateLimit.max} requests per ${config.rateLimit.windowMs/60000} minutes`);
+  const limiter = rateLimit({
+    windowMs: config.rateLimit.windowMs,
+    max: config.rateLimit.max,
+    message: { 
+      status: 'error', 
+      message: 'Too many requests, please try again later'
+    }
+  });
+  
+  // Apply rate limiting to API routes
+  app.use('/api/', limiter);
+}
+
+// Add domain detection middleware for production
+if (!config.isDevelopment) {
+  app.use((req, res, next) => {
+    const host = req.hostname;
+    
+    // Log the incoming request details
+    console.log(`Incoming request: ${req.method} ${req.originalUrl} from host: ${host}`);
+    
+    // If request comes to sparkletidy.com (non-www), redirect to www.sparkletidy.com
+    if (host === config.domains.main) {
+      return res.redirect(301, `https://${config.domains.www}${req.originalUrl}`);
+    }
+    
+    next();
+  });
+}
 
 // Import models
 const Contractor = require('./models/Contractor');
@@ -36,6 +91,9 @@ const FRONTEND_URL = config.nodeEnv === 'production'
 
 // Global variable to store the transporter
 let transporter;
+
+// Global variable to store the server reference
+let server;
 
 // Create Ethereal test account for development
 const createTestAccount = async () => {
@@ -70,21 +128,45 @@ const createTestAccount = async () => {
 // Setup production transporter
 const setupProductionTransporter = () => {
   try {
+    console.log('Setting up Hostinger email transporter...');
+    console.log(`Host: ${config.email.host}, Port: ${config.email.port}, User: ${config.email.auth.user}`);
+    
+    // Check if email configuration is available
+    if (!config.email.auth.user || !config.email.auth.pass) {
+      console.error('Missing email credentials in configuration');
+      console.error('Please ensure EMAIL_USER and EMAIL_PASSWORD are set in .env file');
+      return false;
+    }
+    
+    // Create the transporter with Hostinger configuration
     transporter = nodemailer.createTransport({
-      host: 'smtp.hostinger.com',
-      port: 465,
-      secure: true,
+      host: config.email.host,
+      port: config.email.port,
+      secure: true, // Use TLS for port 465
       auth: {
-        user: 'info@sparkletidy.com',
-        pass: 'SparkSpark2024$'
+        user: config.email.auth.user,
+        pass: config.email.auth.pass
       },
       tls: {
-        rejectUnauthorized: false
-      }
+        // Allow self-signed certificates
+        rejectUnauthorized: false,
+        // Use older ciphers for compatibility
+        ciphers: 'SSLv3'
+      },
+      debug: config.nodeEnv !== 'production', // Only enable debug in non-production
+      logger: config.nodeEnv !== 'production'  // Only enable logger in non-production
     });
+    
+    console.log('✅ Hostinger email transporter created successfully');
     return true;
   } catch (error) {
-    console.error('Error setting up production transporter:', error);
+    console.error('❌ Error setting up Hostinger email transporter:', error);
+    console.error('Email configuration attempted:', {
+      host: config.email.host,
+      port: config.email.port,
+      user: config.email.auth.user,
+      // Password excluded for security
+    });
     return false;
   }
 };
@@ -92,16 +174,38 @@ const setupProductionTransporter = () => {
 // Verify connection configuration
 const verifyConnection = async () => {
   try {
+    console.log('Attempting to verify email connection to Hostinger...');
+    
     // Try to set up production transporter first
     if (setupProductionTransporter()) {
-      await transporter.verify();
-      console.log('SMTP connection to Hostinger verified successfully');
-      console.log('Using email: info@sparkletidy.com');
-      return true;
+      // Test the connection
+      console.log('Testing SMTP connection...');
+      try {
+        const verifyResult = await transporter.verify();
+        console.log('✅ SMTP connection to Hostinger verified successfully:', verifyResult);
+        console.log(`✅ Using email: ${config.email.auth.user}`);
+        
+        // You mentioned the Hostinger email is now working, so we'll return success
+        console.log('Using production Hostinger email configuration');
+        return true;
+      } catch (verifyError) {
+        console.error('❌ SMTP verification failed:', verifyError);
+        throw verifyError;
+      }
     }
   } catch (error) {
-    console.error('SMTP connection to Hostinger failed:', error);
-    console.error('Falling back to Ethereal test account...');
+    console.error('❌ SMTP connection to Hostinger failed:', error);
+    
+    if (error.code === 'EAUTH') {
+      console.error('❌ Authentication error - check your email password!');
+    } else if (error.code === 'ESOCKET') {
+      console.error('❌ Socket error - check your port and connection settings!');
+    } else if (error.code === 'ECONNECTION') {
+      console.error('❌ Connection error - check your host and network settings!');
+    }
+    
+    console.warn('Falling back to Ethereal test account for development purposes only...');
+    console.warn('For production, please fix the Hostinger email settings.');
     
     // Fall back to Ethereal test account
     return await createTestAccount();
@@ -397,21 +501,36 @@ app.get('/api/test', (req, res) => {
   res.status(200).json({ success: true, message: 'Server is running' });
 });
 
-app.get('/api/health', (req, res) => {
-  // Check if transporter exists
-  const emailServiceStatus = transporter ? 'available' : 'unavailable';
-  
-  // Check MongoDB connection
-  const mongoConnectionStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
-  
-  res.status(200).json({
-    success: true,
-    message: 'Server is healthy',
-    services: {
-      emailService: emailServiceStatus,
-      database: mongoConnectionStatus
-    }
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    // Check database connection
+    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    
+    // Check email service
+    const emailStatus = transporter ? 'configured' : 'not configured';
+    
+    // Get uptime in seconds
+    const uptime = Math.floor(process.uptime());
+    
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      environment: config.nodeEnv,
+      uptime: `${uptime} seconds`,
+      database: dbStatus,
+      email: {
+        status: emailStatus,
+        provider: config.email.isHostinger ? 'Hostinger' : 'Ethereal'
+      },
+      version: process.env.npm_package_version || '1.0.0'
+    });
+  } catch (error) {
+    console.error('Health check error:', error);
+    res.status(500).json({ 
+      status: 'error', 
+      error: error.message 
+    });
+  }
 });
 
 // Contractor Management API Endpoints
@@ -1100,27 +1219,162 @@ app.post('/api/generate-mock-clients', async (req, res) => {
   }
 });
 
-// Serve static assets in production
-if (config.nodeEnv === 'production') {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend', 'build', 'index.html'));
+// Serve static files from the React frontend app in production
+if (!config.isDevelopment) {
+  console.log('Setting up static file serving for production');
+  
+  // Serve static files from the React app build directory
+  const staticFilesPath = path.join(__dirname, '../frontend/build');
+  
+  // Serve static files with proper cache headers
+  app.use(express.static(staticFilesPath, {
+    etag: true,
+    maxAge: '30d', // Cache static assets for 30 days
+    setHeaders: (res, path) => {
+      // Set cache headers based on file type
+      if (path.endsWith('.html')) {
+        // Don't cache HTML files
+        res.setHeader('Cache-Control', 'no-cache');
+      } else if (path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg)$/)) {
+        // Cache JS, CSS, and images
+        res.setHeader('Cache-Control', 'public, max-age=2592000'); // 30 days
+      }
+    }
+  }));
+  
+  // Handle API routes first (before the catch-all route for the frontend)
+  app.use('/api', (req, res, next) => {
+    console.log(`API request received: ${req.method} ${req.originalUrl}`);
+    next();
   });
+  
+  // For any request not starting with /api, serve the React app
+  app.get('*', (req, res, next) => {
+    if (!req.path.startsWith('/api')) {
+      console.log(`Serving frontend for path: ${req.path}`);
+      res.sendFile(path.join(staticFilesPath, 'index.html'));
+    } else {
+      next();
+    }
+  });
+  
+  console.log(`Static files will be served from: ${staticFilesPath}`);
+  console.log(`All non-API routes will serve the React app`);
 }
 
-// Start server
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT} - Open http://localhost:${PORT}/api/test in your browser to test`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({
+    success: false,
+    message: 'An unexpected error occurred on the server',
+    error: config.isDevelopment ? err.message : 'Internal Server Error'
+  });
+});
+
+// Start the server with better error handling and port fallback
+const startServer = (portIndex = 0) => {
+  const currentPort = portIndex === 0 ? PORT : ALTERNATIVE_PORTS[portIndex - 1];
   
-  // Initialize email transporter
   try {
-    await verifyConnection();
-    console.log('Email service initialized successfully');
+    console.log(`Attempting to start server on port ${currentPort}...`);
+    
+    server = app.listen(currentPort, () => {
+      console.log(`Server running on port ${currentPort} - Open http://localhost:${currentPort}/api/health in your browser to test`);
+    });
+    
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${currentPort} is already in use.`);
+        
+        // Try next port if available
+        const nextPortIndex = portIndex + 1;
+        if (nextPortIndex <= ALTERNATIVE_PORTS.length) {
+          console.log(`Trying alternative port ${ALTERNATIVE_PORTS[nextPortIndex - 1]}...`);
+          startServer(nextPortIndex);
+        } else {
+          console.error('❌ All ports are in use. Please manually close the applications using these ports.');
+          console.error(`Ports attempted: ${PORT}, ${ALTERNATIVE_PORTS.join(', ')}`);
+          process.exit(1);
+        }
+      } else {
+        console.error(`❌ Failed to start server: ${err.message}`);
+        process.exit(1);
+      }
+    });
   } catch (error) {
-    console.error('Failed to initialize email service:', error);
-    console.log('Email functionality may not work correctly');
+    console.error('Critical server error:', error);
+    process.exit(1);
+  }
+};
+
+// Initialize email service, then start the server
+const initializeServices = async () => {
+  try {
+    // Verify email connection and set up transporter
+    const result = await verifyConnection();
+    if (result) {
+      console.log('✅ Email service initialized successfully');
+    } else {
+      console.warn('⚠️ Email service not initialized properly, but continuing with server startup');
+    }
+    
+    // Start the server
+    startServer();
+  } catch (error) {
+    console.error('Failed to initialize services:', error);
+    // Still try to start the server even if email fails
+    startServer();
+  }
+};
+
+// Initialize services and start the application
+initializeServices();
+
+// Improved process termination handling
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  if (server) {
+    server.close(() => {
+      console.log('HTTP server closed');
+      mongoose.connection.close(false, () => {
+        console.log('MongoDB connection closed');
+        console.log('Process terminated');
+        process.exit(0);
+      });
+    });
+    
+    // Force close after 5 seconds if graceful shutdown fails
+    setTimeout(() => {
+      console.error('Forced shutdown after timeout');
+      process.exit(1);
+    }, 5000);
+  } else {
+    console.log('Server not initialized, terminating immediately');
+    process.exit(0);
+  }
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  if (server) {
+    server.close(() => {
+      console.log('HTTP server closed');
+      mongoose.connection.close(false, () => {
+        console.log('MongoDB connection closed');
+        console.log('Process terminated');
+        process.exit(0);
+      });
+    });
+    
+    // Force close after 5 seconds if graceful shutdown fails
+    setTimeout(() => {
+      console.error('Forced shutdown after timeout');
+      process.exit(1);
+    }, 5000);
+  } else {
+    console.log('Server not initialized, terminating immediately');
+    process.exit(0);
   }
 });
 

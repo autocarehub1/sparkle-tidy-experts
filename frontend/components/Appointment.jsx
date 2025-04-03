@@ -246,68 +246,101 @@ function Appointment() {
     setLoading(true);
     setError('');
     
-    // Maximum number of retry attempts
-    const maxRetries = 2;
-    let retryCount = 0;
-    let success = false;
-    
-    while (retryCount <= maxRetries && !success) {
-      try {
-        if (retryCount > 0) {
-          console.log(`Retry attempt ${retryCount}/${maxRetries}...`);
-        }
-        
-        // Make sure estimatedPrice is properly formatted
-        const formattedPrice = estimatedPrice ? estimatedPrice.toString() : '0.00';
-        
-        console.log('Submitting appointment data:', {
-          ...formData,
-          estimatedPrice: formattedPrice
-        });
-        
-        // Send appointment data to the server using the apiClient
-        const response = await apiClient.post('/api/send-appointment', {
-          ...formData,
-          estimatedPrice: formattedPrice
-        });
-        
-        console.log('Server response:', response.data);
-        
-        if (response.data.success) {
-          setSuccess(true);
-          success = true;
-        } else {
-          throw new Error(response.data.message || 'There was an error scheduling your appointment. Please try again.');
-        }
-      } catch (err) {
-        console.error(`Error submitting appointment (attempt ${retryCount + 1}/${maxRetries + 1}):`, err);
-        
-        if (retryCount === maxRetries) {
-          // This was the last attempt, show error to user
-          if (err.response) {
-            console.error('Server error response:', err.response.data);
-            setError(err.response.data.message || 'There was an error scheduling your appointment. Please try again or contact us directly at info@sparkletidy.com.');
-          } else if (err.request) {
-            console.error('No response received from server');
-            setError('Could not connect to the server. Please check your internet connection and try again, or contact us directly at info@sparkletidy.com.');
-          } else {
-            console.error('Error details:', err.message);
-            setError(err.message || 'There was an error scheduling your appointment. Please try again or contact us directly at info@sparkletidy.com.');
-          }
-        }
-        
-        retryCount++;
-        
-        if (retryCount <= maxRetries) {
-          // Wait before retrying (exponential backoff)
-          const delay = 1000 * Math.pow(2, retryCount - 1);
-          console.log(`Waiting ${delay}ms before retry...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-        }
+    try {
+      // Make sure estimatedPrice is properly formatted
+      const formattedPrice = estimatedPrice ? estimatedPrice.toString() : '0.00';
+      
+      console.log('Submitting appointment data:', {
+        ...formData,
+        estimatedPrice: formattedPrice
+      });
+      
+      // Send appointment data to the server using the apiClient
+      const response = await apiClient.post('/api/send-appointment', {
+        ...formData,
+        estimatedPrice: formattedPrice
+      });
+      
+      console.log('Server response:', response.data);
+      
+      if (response.data.success) {
+        setSuccess(true);
+      } else {
+        throw new Error(response.data.message || 'There was an error scheduling your appointment. Please try again.');
       }
+    } catch (err) {
+      console.error('Error submitting appointment:', err);
+      
+      // Check if the error has a friendly message from the axios interceptor
+      if (err.isConnectionError && err.friendlyMessage) {
+        setError(
+          <div className="error-container">
+            <p>{err.friendlyMessage}</p>
+            <button 
+              type="button" 
+              className="retry-button" 
+              onClick={() => handleSubmit(new Event('retry'))}
+            >
+              Try Again
+            </button>
+          </div>
+        );
+      } else if (err.response) {
+        // Server returned an error response
+        console.error('Server error response:', err.response.data);
+        setError(
+          <div className="error-container">
+            <p>{err.response.data.message || 'There was an error processing your request.'}</p>
+            <button 
+              type="button" 
+              className="retry-button" 
+              onClick={() => handleSubmit(new Event('retry'))}
+            >
+              Try Again
+            </button>
+          </div>
+        );
+      } else if (err.request) {
+        // No response received from server
+        console.error('No response received from server');
+        setError(
+          <div className="error-container">
+            <p>Could not connect to the server. Please check your internet connection and try again.</p>
+            <p>If the problem persists, you can:</p>
+            <ul>
+              <li>Contact us directly at <a href={`mailto:${config.CONTACT.EMAIL}`}>{config.CONTACT.EMAIL}</a></li>
+              <li>
+                <button 
+                  type="button" 
+                  className="retry-button" 
+                  onClick={() => handleSubmit(new Event('retry'))}
+                >
+                  Try Again
+                </button>
+              </li>
+            </ul>
+          </div>
+        );
+      } else {
+        // Something else went wrong
+        console.error('Error details:', err.message);
+        setError(
+          <div className="error-container">
+            <p>{err.message || 'There was an error scheduling your appointment. Please try again.'}</p>
+            <p>If the problem persists, please contact us at <a href={`mailto:${config.CONTACT.EMAIL}`}>{config.CONTACT.EMAIL}</a>.</p>
+            <button 
+              type="button" 
+              className="retry-button" 
+              onClick={() => handleSubmit(new Event('retry'))}
+            >
+              Try Again
+            </button>
+          </div>
+        );
+      }
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   // Render month name and year

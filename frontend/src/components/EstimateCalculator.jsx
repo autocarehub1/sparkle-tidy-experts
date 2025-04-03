@@ -116,9 +116,16 @@ function EstimateCalculator() {
         };
         
         console.log('Submitting estimate data:', dataToSend);
+        console.log('API URL:', apiClient.defaults.baseURL);
         
-        // Send data to backend using apiClient
-        const response = await apiClient.post('/api/send-estimate', dataToSend);
+        // Send data to backend using apiClient with explicit CORS headers
+        const response = await apiClient.post('/api/send-estimate', dataToSend, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          withCredentials: true
+        });
         
         console.log('Server response:', response.data);
         
@@ -135,9 +142,12 @@ function EstimateCalculator() {
           // This was the last attempt, show error to user
           if (err.response) {
             console.error('Server error response:', err.response.data);
+            console.error('Response status:', err.response.status);
+            console.error('Response headers:', err.response.headers);
             setError(err.response.data.message || 'There was an error sending your estimate. Please try again or contact us directly at info@sparkletidy.com.');
           } else if (err.request) {
             console.error('No response received from server');
+            console.error('Request details:', err.request);
             setError('Could not connect to the server. Please check your internet connection and try again, or contact us directly at info@sparkletidy.com.');
           } else {
             console.error('Error details:', err.message);
